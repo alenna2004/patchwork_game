@@ -75,28 +75,34 @@ class TimeLine:
         self.first_player = first_player
         self.second_player = second_player
         self.current_player = self.first_player
-        self.first_players_buttons_passed = 0
-        self.second_players_buttons_passed = 0
     
     def move(self, step):
         self.current_player.time_coords+=step
     
-    def buttons_income(self):
+    def buttons_income(self, step):
         if self.current_player == self.first_player:
-            index = self.first_players_buttons_passed
-            if self.first_player.time_coords >= self.button_income_coords[index]:
-                self.first_player.num_buttons += self.first_player.income
-                self.first_players_buttons_passed +=1
+            coord = self.first_player.time_coords
+            indexes =[i for i in range(coord-step,coord)]
+            for i in self.button_income_coords:
+                if i in indexes:
+                    self.first_player.num_buttons += self.first_player.income
         if self.current_player == self.second_player:
-            index = self.second_players_buttons_passed
-            if self.second_player.time_coords >= self.button_income_coords[index]:
-                self.second_player.num_buttons += self.second_player.income
-                self.second_players_buttons_passed +=1
+            coord = self.second_player.time_coords
+            indexes =[i for i in range(coord-step,coord)]
+            for i in self.button_income_coords:
+                if i in indexes:
+                    self.second_player.num_buttons += self.second_player.income
     
-    def special_tiles(self):
-        if self.current_player.time_coords > self.special_tiles_coords[0]:
-            self.current_player.num_special_tiles +=1
-            del self.special_tiles_coords[0]
+    def special_tiles(self, step):
+        coord = self.current_player.time_coords
+        indexes =[i for i in range(coord-step,coord)]
+        inds_to_del = []
+        for j in range(len(self.special_tiles_coords)):
+            if self.special_tiles_coords[j] in indexes:
+                self.first_player.num_special_tiles += 1
+                inds_to_del.append(j)
+        for i in inds_to_del:
+            del self.special_tiles_coords[i]
     
     def whose_turn(self):
         if self.second_player.time_coords < self.first_player.time_coords:
@@ -125,37 +131,44 @@ def action_A(player_1, player_2, timeline):
     time_move = abs(player_1.time_coords - player_2.time_coords) +1
     moving_player.num_buttons += time_move
     timeline.move(time_move)
-    timeline.buttons_income()
-    timeline.special_tiles()
+    timeline.buttons_income(time_move)
+    timeline.special_tiles(time_move)
     print(f'''{moving_player.name} has {moving_player.num_buttons} buttons, 
     {moving_player.num_special_tiles} special tiles and stay in {moving_player.time_coords} in timeline''')
 
 
 def action_B(player_1, player_2, timeline, tiles):
-    print(list(reversed([tile.base_configuration for tile in tiles])))
-    print('Choose 1, 2 or 3')
-    tile_ind = (int(input()))*(-1)
-    if tile_ind <-3 or tile_ind >-1:
-        raise ValueError('You can write only 1, 2 or 3')
-    chosen_tile = tiles[tile_ind]
-    while chosen_tile.price > timeline.current_player.num_buttons:
-        print('Choose another tile, you are too poor')
+    if tiles[0].base_configuration != [[True]]:
+        print(list(reversed([tile.base_configuration for tile in tiles])))
+        print(f'Choose one from {len(tiles)}')
         tile_ind = (int(input()))*(-1)
-        if tile_ind <-3 or tile_ind >-1:
-            raise ValueError('You can write only 1, 2 or 3')
+        while tile_ind <-3 or tile_ind >-1:
+            print(f'You can write only 1, 2 or 3')
+            tile_ind = (int(input()))*(-1)
         chosen_tile = tiles[tile_ind]
-    time_add = chosen_tile.time
-    chosen_tile.get_all_configurations()
-    current_conf = chosen_tile.get_current_configuration()
-    print(current_conf)
-    print('To choose another configuration print next, to confirm configuration print ok')
-    answer = str(input())
-    while answer.lower() != 'ok':
-        if answer.lower() == 'next':
-            chosen_tile.choose_next_configuration()
-            current_conf = chosen_tile.get_current_configuration()
-            print(current_conf)
+        while chosen_tile.price > timeline.current_player.num_buttons:
+            print('Choose another tile, you are too poor')
+            tile_ind = (int(input()))*(-1)
+            while tile_ind <-3 or tile_ind >-1:
+                print(f'You can write only one from {len(tiles)}')
+                tile_ind = (int(input()))*(-1)
+            chosen_tile = tiles[tile_ind]
+        time_add = chosen_tile.time
+        chosen_tile.get_all_configurations()
+        current_conf = chosen_tile.get_current_configuration()
+        print(current_conf)
+        print('To choose another configuration print next, to confirm configuration print ok')
         answer = str(input())
+        while answer.lower() != 'ok':
+            if answer.lower() == 'next':
+                chosen_tile.choose_next_configuration()
+                current_conf = chosen_tile.get_current_configuration()
+                print(current_conf)
+            answer = str(input())
+    else:
+        chosen_tile = tiles[0]
+        current_conf = chosen_tile.base_configuration
+        time_ind = -1
     print('Choose the top left cell coordinates to place tile on a quilt board, First write x value, second write y value')
     x = int(input())
     y  = int(input())
@@ -166,13 +179,23 @@ def action_B(player_1, player_2, timeline, tiles):
         y = int(input())
         is_possible = timeline.current_player.players_field.is_placing_tile_possible(current_conf,x,y)
     timeline.current_player.players_field.place_tile(current_conf,x,y)
-    timeline.current_player.time_coords += time_add
-    income = timeline.buttons_income()
-    timeline.current_player.num_buttons -= chosen_tile.price
-    timeline.special_tiles()
-    print(f'''{timeline.current_player.name} has {timeline.current_player.num_buttons} buttons, 
-    {timeline.current_player.num_special_tiles} special tiles and stay in {timeline.current_player.time_coords} in timeline''')
+    if tiles[0].base_configuration != [[True]]:
+        timeline.move(time_add)
+        income = timeline.buttons_income(time_add)
+        timeline.current_player.num_buttons -= chosen_tile.price
+        timeline.special_tiles(time_add)
+        print(f'''{timeline.current_player.name} has {timeline.current_player.num_buttons} buttons, 
+        {timeline.current_player.num_special_tiles} special tiles and stay in {timeline.current_player.time_coords} in timeline''')
     return tile_ind
+
+
+def count_scores(player):
+    total_score = 0
+    total_score += player.num_buttons
+    if player.is_bonus:
+        total_score += 7
+    total_score -= 2*player.players_field.empty_cells_left()
+    return total_score
 
 
 def play(num_cells_timeline, button_income_coords, special_tiles_coords, tiles_list,first_player_name='One', second_player_name='Two'):
@@ -218,5 +241,21 @@ def play(num_cells_timeline, button_income_coords, special_tiles_coords, tiles_l
         timeline.is_game_end()
         if len(common_tiles) == 0:
             break
-    print('Friendship won')
-    
+    timeline.current_player = player_1
+    while player_1.num_special_tiles !=0:
+        sp_tile  = Tile(0,0,0,[[True]])
+        action_B(player_1, player_2, timeline, [sp_tile])
+        player_1.num_special_tiles -= 1
+    timeline.current_player = player_2
+    while player_2.num_special_tiles !=0:
+        sp_tile  = Tile(0,0,0,[[True]])
+        action_B(player_1, player_2, timeline, [sp_tile])
+        player_2.num_special_tiles -= 1
+    score_1 = count_scores(player_1)
+    score_2 = count_scores(player_2)
+    if score_1 > score_2:
+        print(f'{player_1.name} won')
+    if score_1 < score_2:
+        print(f'{player_2.name} won')
+    if  score_1 == score_2:
+        print('Friendship won')
