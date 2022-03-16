@@ -168,7 +168,6 @@ def action_B(player_1, player_2, timeline, tiles):
     else:
         chosen_tile = tiles[0]
         current_conf = chosen_tile.base_configuration
-        time_ind = -1
     print('Choose the top left cell coordinates to place tile on a quilt board, First write x value, second write y value')
     x = int(input())
     y  = int(input())
@@ -186,7 +185,7 @@ def action_B(player_1, player_2, timeline, tiles):
         timeline.special_tiles(time_add)
         print(f'''{timeline.current_player.name} has {timeline.current_player.num_buttons} buttons, 
         {timeline.current_player.num_special_tiles} special tiles and stay in {timeline.current_player.time_coords} in timeline''')
-    return tile_ind
+        return tile_ind
 
 
 def count_scores(player):
