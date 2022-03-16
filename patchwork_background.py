@@ -57,8 +57,11 @@ class QuiltBoard:
     def is_placing_tile_possible(self, tile_conf, x_from, y_from):
         empty_field = np.zeros((FIELD_HEIGHT, FIELD_WIDTH), dtype=bool)
         tile_height, tile_width = len(tile_conf), len(tile_conf[0])
-        empty_field[y_from:y_from+tile_height, x_from:x_from+tile_width] = tile_conf
-        return np.all(empty_field & self.board == False)
+        try:
+            empty_field[y_from:y_from+tile_height, x_from:x_from+tile_width] = tile_conf
+            return np.all(empty_field & self.board == False)
+        except ValueError:
+            return False
     
     def place_tile(self, tile_conf, x_from, y_from):
         tile_height, tile_width = len(tile_conf), len(tile_conf[0])
