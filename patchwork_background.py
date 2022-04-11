@@ -65,7 +65,14 @@ class QuiltBoard:
     
     def place_tile(self, tile_conf, x_from, y_from):
         tile_height, tile_width = len(tile_conf), len(tile_conf[0])
+        stored_cells = []
+        for i in range(y_from,y_from+tile_height):
+            for j in range(x_from,x_from+tile_width):
+                if self.board[i,j] == True:
+                    stored_cells.append([i,j])
         self.board[y_from:y_from+tile_height, x_from:x_from+tile_width] = tile_conf
+        for el in stored_cells:
+            self.board[el[0], el[1]] = True
     
     def empty_cells_left(self):
         return np.count_nonzero(self.board)
