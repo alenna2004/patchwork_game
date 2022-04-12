@@ -1,5 +1,4 @@
-tiles_list = [[[[True, True]],2,0,1], 
-     [[[True, True, True], [False, True, False],[False, True, False]],5,2,5], 
+tiles_list = [[[[True, True, True], [False, True, False],[False, True, False]],5,2,5], 
      [[[True, False, False],[True, False, False], [True, True, True]],4,1,2], 
      [[[True, True, True]],2,0,2],
      [[[True, False, True], [True, True, True]],1,0,2],
