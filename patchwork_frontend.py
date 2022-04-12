@@ -92,8 +92,7 @@ def action_A(player_1, player_2, timeline):
     timeline.move(time_move)
     timeline.buttons_income(time_move)
     timeline.special_tiles(time_move)
-    messeg = (f'''{moving_player.name} has {moving_player.num_buttons} buttons, 
-    {moving_player.num_special_tiles} special tiles and stay in {moving_player.time_coords} in timeline''')
+    
 
 
 def count_scores(player):
@@ -106,8 +105,8 @@ def count_scores(player):
 
 draw_game_tip()
 num_cells_timeline= 54 
-button_income_coords = [1,3, 10, 14, 17, 21, 30, 36, 42, 48, 51] 
-special_tiles_coords = [6, 8, 19, 27, 34, 45]
+button_income_coords = [1,2,3] 
+special_tiles_coords = [6,7,8]
 is_bonus = False
 for t in tiles_list:
     if len(t) !=4:
@@ -131,7 +130,14 @@ while running:
     screen.fill((0,0,0))
     textSurf, TextRect = text_objects(f"текущий игрок: {timeline.current_player.name}, количество пуговиц: {timeline.current_player.num_buttons}", GAME_FONT)
     screen.blit(textSurf, (200,450))
-    
+    textSurf2, TextRec2 = text_objects(f"Зажмите h чтобы увидеть подсказки", GAME_FONT)
+    screen.blit(textSurf2, (200,475))
+    textSurf3, TextRect3 = text_objects(f'Цена: {tile.price}', GAME_FONT)
+    textSurf4, TextRect4 = text_objects(f'доход: {tile.income}', GAME_FONT)
+    textSurf5, TextRect5 = text_objects(f'время:{tile.time}', GAME_FONT)
+    screen.blit(textSurf3, (920,150))
+    screen.blit(textSurf4, (920,200))
+    screen.blit(textSurf5, (920,250))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
