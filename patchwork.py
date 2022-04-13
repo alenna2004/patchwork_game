@@ -131,13 +131,13 @@ timeline = TimeLine(num_cells_timeline, button_income_coords, special_tiles_coor
 while running:
 
     screen.fill((0,0,0))
-    textSurf, TextRect = text_objects(f"текущий игрок: {timeline.current_player.name}, количество пуговиц: {timeline.current_player.num_buttons}", GAME_FONT)
+    textSurf, TextRect = text_objects(f"Текущий игрок: {timeline.current_player.name}, количество пуговиц: {timeline.current_player.num_buttons}", GAME_FONT)
     screen.blit(textSurf, (200,450))
     textSurf2, TextRec2 = text_objects(f"Зажмите h чтобы увидеть подсказки", GAME_FONT)
     screen.blit(textSurf2, (200,475))
     textSurf3, TextRect3 = text_objects(f'Цена: {tile.price}', GAME_FONT)
-    textSurf4, TextRect4 = text_objects(f'доход: {tile.income}', GAME_FONT)
-    textSurf5, TextRect5 = text_objects(f'время:{tile.time}', GAME_FONT)
+    textSurf4, TextRect4 = text_objects(f'Доход: {tile.income}', GAME_FONT)
+    textSurf5, TextRect5 = text_objects(f'Время:{tile.time}', GAME_FONT)
     screen.blit(textSurf3, (920,150))
     screen.blit(textSurf4, (920,200))
     screen.blit(textSurf5, (920,250))
