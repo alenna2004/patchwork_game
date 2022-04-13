@@ -173,19 +173,19 @@ while running:
             tile.get_all_configurations()
             tile_conf = tile.get_current_configuration()
             if timeline.current_player.players_field.is_placing_tile_possible(tile_conf, column, row):
-                timeline.current_player.players_field.place_tile(tile_conf, column, row)
-                time_add = tile.time
-                timeline.move(time_add)
-                income = timeline.buttons_income(time_add)
-                timeline.current_player.num_buttons -= tile.price
-                timeline.special_tiles(time_add)
-                common_tiles = common_tiles[ind+1:]
-                ind = -1
-                is_bonus = timeline.current_player.players_field.has_field_7x7_square()
-                if is_bonus:
-                    timeline.current_player.is_bonus = True
-                timeline.whose_turn()
-            print(column, row)
+                if timeline.current_player.num_buttons >= tile.price:
+                    timeline.current_player.players_field.place_tile(tile_conf, column, row)
+                    time_add = tile.time
+                    timeline.move(time_add)
+                    income = timeline.buttons_income(time_add)
+                    timeline.current_player.num_buttons -= tile.price
+                    timeline.special_tiles(time_add)
+                    common_tiles = common_tiles[ind+1:]
+                    ind = -1
+                    is_bonus = timeline.current_player.players_field.has_field_7x7_square()
+                    if is_bonus:
+                        timeline.current_player.is_bonus = True
+                    timeline.whose_turn()
     if timeline.is_game_end():
         score_1 = count_scores(player_1)
         score_2 = count_scores(player_2)
