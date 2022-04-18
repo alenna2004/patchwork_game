@@ -9,20 +9,30 @@ from tiles_data import tiles_list
 
 pygame.init()
 
+BLACK_THEME = [(225, 0, 0), (0, 0, 225), (0, 225, 0), (0, 225, 0), (225, 225, 225), (0,255,255), (0, 0, 0), (100, 100, 100), (150, 28, 200), (1, 202, 225)]
+WHITE_THEME = [(128, 0, 128), (128, 0, 0), (128, 0, 128),(25, 25, 112),(188, 143, 143),(61, 37, 2),(248, 248, 255),(176, 196, 222),(30, 144, 255),(199, 21, 133)]
+#YELLOW_THEME = [(60 179 113), (128, 0, 0), (60 179 113), (123, 104, 23), (160, 82, 45), (61, 37, 2), (255, 215, 0), (210, 105, 30), (30,144,255), (199, 21, 133)]
+YELLOW_THEME = [(102,0,0), (128, 128, 0), (102,0,0),(0, 128, 0),(160, 82, 45),(61, 37, 2),(255,215,0),(210,105,30),(148, 0, 211),(222, 0, 0)]
+RED_THEME = [(255, 140, 0),(128, 0, 128),(255, 140, 0),(65, 105, 225),(28,0,0),(225,225,225),(178, 34, 34),(10, 0, 0),(0, 128, 0),(25, 25, 112)]
+
+t_ind = 0
+THEMES = [BLACK_THEME, WHITE_THEME, YELLOW_THEME, RED_THEME]
+SETTED_TILE_COLOR, BUTTON_COLOR, SP_TILE_COLOR, FREE_TILE_COLOR, NORM_COLOR, TEXT_COLOR, SCREEN_COLOR, TIMELINE_COLOR, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR = THEMES[t_ind]
+#SETTED_TILE_COLOR = (255, 140, 0)
+#BUTTON_COLOR = (128, 0, 128)
+#SP_TILE_COLOR = (255, 140, 0)
+#FREE_TILE_COLOR = (65, 105, 225)
+#NORM_COLOR = (28,0,0)
+#TEXT_COLOR = (225,225,225)
+#SCREEN_COLOR = (178, 34, 34)
+#TIMELINE_COLOR = (10, 0, 0)
+#FIRST_PLAYER_COLOR = (0, 128, 0)
+#SECOND_PLAYER_COLOR = (25, 25, 112)
+
 size = (1100, 510)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("mega_game")
 GAME_FONT = pygame.font.Font('your_font.ttf', 24)
-
-RED = (225, 0, 0)
-BLUE = (0, 0, 225)
-GREEN = (0, 225, 0)
-WHITE = (225, 225, 225)
-CYAN = (0,255,255)
-BLACK = (0, 0, 0)
-GRAY = (100, 100, 100)
-FIRST_PLAYER_COLOR = (150, 28, 200)
-SECOND_PLAYER_COLOR = (1, 202, 225)
 
 num_cells_timeline= 54 
 button_income_coords = [4,10,16,24,31,38,44,51] 
@@ -39,7 +49,7 @@ tile = common_tiles[-1]
 
 
 def text_objects(text, font):
-    textSurface = font.render(text, True, CYAN)
+    textSurface = font.render(text, True, TEXT_COLOR)
     # Create the text rect.
     textRect = textSurface.get_rect()
     # Return a tuple consisting of the surface and the rect.
@@ -50,32 +60,29 @@ def draw_game_tip():
     if keystate[pygame.K_h]:
         tip_image = pygame.image.load("rules.png")
         tip_sf = pygame.Surface(size)
-        tip_sf.fill(BLACK)
+        tip_sf.fill((0,0,0))
         textSurf, TextRect = text_objects('правила', GAME_FONT)
-        #text_surface, rect = GAME_FONT.render("""ДАРОВА ЭТО ПОДСКАЗКИ
-                                            #  КАК ИГРАТЬ В ЭТО НЕЧТО
-                                              #ОТОЖМИ h ЧТОБ ЗАКРЫТЬ""",False,CYAN)
         tip_sf.blit(textSurf, TextRect)
         screen.blit(tip_sf, (0,0))
         screen.blit(tip_image, (0,0))
-        #GAME_FONT.render_to(screen, (40, 50), "ДАРОВА ЭТО ПОДСКАЗКИ\nКАК ИГРАТЬ В ЭТО НЕЧТО\nОТОЖМИ h ЧТОБ ЗАКРЫТЬ", CYAN)
+        
 
 def draw_timeline(special_tile_coords, button_income_coords,
                   first_player, second_player):
     keystate = pygame.key.get_pressed()
     if keystate[pygame.K_t]:
         timeline_screen = pygame.Surface(size)
-        timeline_screen.fill(BLACK)
+        timeline_screen.fill(SCREEN_COLOR)
         square = pygame.Surface((40,40))
-        square.fill(GREEN)
+        square.fill(NORM_COLOR)
         x = 5
         y = 5
         for i in range(54):  #54
-            square.fill(GRAY)
+            square.fill(TIMELINE_COLOR)
             if i in special_tile_coords:  #  определяем функциональный тип клетки
-                square.fill(GREEN)
+                square.fill(SP_TILE_COLOR)
             if i in button_income_coords:
-                square.fill(BLUE)
+                square.fill(BUTTON_COLOR)
             if i == first_player:
                 square.fill(FIRST_PLAYER_COLOR)
             if i == second_player:
@@ -124,17 +131,16 @@ for t in tiles_list:
 # start_board = empty_field = np.zeros((FIELD_HEIGHT, FIELD_WIDTH), dtype=bool)
 q_board_1 = QuiltBoard(np.zeros((FIELD_HEIGHT, FIELD_WIDTH), dtype=bool))
 q_board_2 = QuiltBoard(np.zeros((FIELD_HEIGHT, FIELD_WIDTH), dtype=bool))
-player_1 = Player(q_board_1, 'петя')
-player_2 = Player(q_board_2, 'вася')
+player_1 = Player(q_board_1, 'Игрок 1')
+player_2 = Player(q_board_2, 'Игрок 2')
 timeline = TimeLine(num_cells_timeline, button_income_coords, special_tiles_coords, player_1, player_2)
 
 while running:
-
-    screen.fill((0,0,0))
-    textSurf, TextRect = text_objects(f"Текущий игрок: {timeline.current_player.name}, количество пуговиц: {timeline.current_player.num_buttons}", GAME_FONT)
-    screen.blit(textSurf, (200,450))
+    screen.fill(SCREEN_COLOR)
+    textSurf, TextRect = text_objects(f"Текущий игрок: {timeline.current_player.name}, количество пуговиц: {timeline.current_player.num_buttons}, количество кусков кожи: {timeline.current_player.num_special_tiles}", GAME_FONT)
+    screen.blit(textSurf, (100,420))
     textSurf2, TextRec2 = text_objects(f"Зажмите h чтобы увидеть подсказки", GAME_FONT)
-    screen.blit(textSurf2, (200,475))
+    screen.blit(textSurf2, (300,460))
     textSurf3, TextRect3 = text_objects(f'Цена: {tile.price}', GAME_FONT)
     textSurf4, TextRect4 = text_objects(f'Доход: {tile.income}', GAME_FONT)
     textSurf5, TextRect5 = text_objects(f'Время:{tile.time}', GAME_FONT)
@@ -161,8 +167,18 @@ while running:
                 action_A(player_1, player_2, timeline)
                 timeline.whose_turn()  #передача хода
 
-            elif event.key == pygame.K_n:
+            elif event.key == pygame.K_r:
                 tile.choose_next_configuration()
+
+            elif event.key == pygame.K_v:
+                t_ind +=1
+                if t_ind >= len(THEMES):
+                    t_ind = 0
+                SETTED_TILE_COLOR, BUTTON_COLOR, SP_TILE_COLOR, FREE_TILE_COLOR, NORM_COLOR, TEXT_COLOR, SCREEN_COLOR, TIMELINE_COLOR, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR = THEMES[t_ind]
+
+            elif event.key == pygame.K_s:
+                if timeline.current_player.num_special_tiles >0:
+                    tile = Tile(0,0,0,[[True]])
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x_mouse, y_mouse = pygame.mouse.get_pos()
@@ -175,6 +191,8 @@ while running:
             if timeline.current_player.players_field.is_placing_tile_possible(tile_conf, column, row):
                 if timeline.current_player.num_buttons >= tile.price:
                     timeline.current_player.players_field.place_tile(tile_conf, column, row)
+                    if tile.time ==0 and tile.price == 0 and tile.income == 0:
+                        timeline.current_player.num_special_tiles -=1
                     time_add = tile.time
                     timeline.move(time_add)
                     income = timeline.buttons_income(time_add)
@@ -206,9 +224,9 @@ while running:
         for row in range(9):
             for col in range(9):
                 if timeline.first_player.players_field.board[row][col]:
-                    color = RED
+                    color = SETTED_TILE_COLOR
                 else:
-                    color = WHITE
+                    color = NORM_COLOR
                 x = col*widht + (col+1)*margin
                 y = row*height + (row+1)*margin
                 pygame.draw.rect(screen,color, (x,y,widht, height))
@@ -216,9 +234,9 @@ while running:
         for row in range(9):
             for col in range(9):
                 if timeline.second_player.players_field.board[row][col]:
-                    color = RED
+                    color = SETTED_TILE_COLOR
                 else:
-                    color = WHITE
+                    color = NORM_COLOR
                 x = col*widht + (col+1)*margin
                 y = row*height + (row+1)*margin
                 pygame.draw.rect(screen,color, (495+x,y,widht, height))
@@ -235,7 +253,7 @@ while running:
             if t_conf[t_row][t_col] == True:
                 x = (column+t_col)*(widht+margin) + margin
                 y = (row+t_row)*(height+margin) + margin
-                pygame.draw.rect(screen,GREEN,(x,y,widht,height))
+                pygame.draw.rect(screen,FREE_TILE_COLOR,(x,y,widht,height))
 
 # draw tips (if h is pressed)
     draw_game_tip()
@@ -247,7 +265,7 @@ while running:
     
     pygame.display.update()
 
-screen.fill(BLACK)
+screen.fill(SCREEN_COLOR)
 textSurf, TextRect = text_objects(f'{player_n} won', GAME_FONT)
 screen.blit(textSurf, (400,200))
 pygame.display.update()
