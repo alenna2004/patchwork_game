@@ -8,9 +8,13 @@ from tiles_data import tiles_list
 
 
 pygame.init()
+#pygame.mixer.init()
+#pygame.mixer.music.load("tl.mp3") 
+#pygame.mixer.music.play(-1)
 
 BLACK_THEME = [(225, 0, 0), (0, 0, 225), (0, 225, 0), (0, 225, 0), (225, 225, 225), (0,255,255), (0, 0, 0), (100, 100, 100), (150, 28, 200), (1, 202, 225)]
 WHITE_THEME = [(128, 0, 128), (128, 0, 0), (128, 0, 128),(25, 25, 112),(188, 143, 143),(61, 37, 2),(248, 248, 255),(176, 196, 222),(30, 144, 255),(199, 21, 133)]
+#YELLOW_THEME = [(60 179 113), (128, 0, 0), (60 179 113), (123, 104, 23), (160, 82, 45), (61, 37, 2), (255, 215, 0), (210, 105, 30), (30,144,255), (199, 21, 133)]
 YELLOW_THEME = [(102,0,0), (128, 128, 0), (102,0,0),(0, 128, 0),(160, 82, 45),(61, 37, 2),(255,215,0),(210,105,30),(148, 0, 211),(222, 0, 0)]
 RED_THEME = [(255, 140, 0),(128, 0, 128),(255, 140, 0),(65, 105, 225),(28,0,0),(225,225,225),(178, 34, 34),(10, 0, 0),(0, 128, 0),(25, 25, 112)]
 GREEN_THEME = [(242, 183, 94),(220, 20, 60),(242, 183, 94),(242, 155, 174),(85, 107, 47),(51,23,0),(166, 242, 141),(1, 92, 48),(138, 43, 226),(240, 230, 140)]
@@ -18,16 +22,17 @@ GREEN_THEME = [(242, 183, 94),(220, 20, 60),(242, 183, 94),(242, 155, 174),(85, 
 t_ind = 0
 THEMES = [BLACK_THEME, WHITE_THEME, YELLOW_THEME, RED_THEME, GREEN_THEME]
 SETTED_TILE_COLOR, BUTTON_COLOR, SP_TILE_COLOR, FREE_TILE_COLOR, NORM_COLOR, TEXT_COLOR, SCREEN_COLOR, TIMELINE_COLOR, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR = THEMES[t_ind]
-#SETTED_TILE_COLOR = (255, 140, 0)
-#BUTTON_COLOR = (128, 0, 128)
-#SP_TILE_COLOR = (255, 140, 0)
-#FREE_TILE_COLOR = (65, 105, 225)
-#NORM_COLOR = (28,0,0)
-#TEXT_COLOR = (225,225,225)
-#SCREEN_COLOR = (178, 34, 34)
-#TIMELINE_COLOR = (10, 0, 0)
-#FIRST_PLAYER_COLOR = (0, 128, 0)
-#SECOND_PLAYER_COLOR = (25, 25, 112)
+#[(0, 250, 154),(225, 0, 0)]
+#SETTED_TILE_COLOR = (232, 187, 121)
+#BUTTON_COLOR = (220, 20, 60)
+#SP_TILE_COLOR = (232, 187, 121)
+#FREE_TILE_COLOR = (255, 182, 193)
+#NORM_COLOR = (85, 107, 47)
+#TEXT_COLOR = (51,23,0)
+#SCREEN_COLOR = (166, 242, 141)
+#TIMELINE_COLOR = (1, 92, 48)
+#FIRST_PLAYER_COLOR = (138, 43, 226)
+#SECOND_PLAYER_COLOR = (240, 230, 140)
 
 size = (1100, 510)
 screen = pygame.display.set_mode(size)
@@ -199,7 +204,8 @@ while running:
                     timeline.current_player.num_buttons -= tile.price
                     timeline.special_tiles(time_add)
                     common_tiles = common_tiles[ind+1:]
-                    ind = -1
+                    tile = common_tiles[0]
+                    ind = 0
                     is_bonus = timeline.current_player.players_field.has_field_7x7_square()
                     if is_bonus:
                         timeline.current_player.is_bonus = True
